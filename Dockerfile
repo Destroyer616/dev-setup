@@ -3,7 +3,7 @@ FROM docker.io/jenkins/jenkins
 
 # Install necessary packages
 USER root
-RUN apt update && apt install -y nano podman git
+RUN apt update && apt install -y nano podman git maven
 
 # Install nvm to manage nodejs and npm
 USER root
