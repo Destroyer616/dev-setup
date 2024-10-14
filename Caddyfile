@@ -1,0 +1,6 @@
+localhost {
+#	root * /usr/share/caddy
+#	file_server
+	reverse_proxy nexus3:8081
+}
+
