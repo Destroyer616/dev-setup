@@ -2,9 +2,11 @@
 FROM docker.io/jenkins/jenkins
 
 # Install necessary packages
+USER root
 RUN apt update && apt install -y nano podman git
 
 # Install nvm to manage nodejs and npm
+USER root
 RUN touch ~/.bashrc
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
 
