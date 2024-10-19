@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  nexus:
+    image: sonatype/nexus3
+    container_name: nexus3
+    ports:
+      - "8081:8081"
+      - "8082:8082"
+    volumes:
+      - nexus_data:/nexus-data
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 2G
+    networks:
+      - dev
+
+volumes:
+  nexus_data:
+  
+networks:
+  dev:

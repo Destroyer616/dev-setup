@@ -1,0 +1,21 @@
+version:  3.8
+services:
+  trivy:
+    image: bitnami/trivy
+    container_name: trivy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock 
+      - trivy_cache:/root/.cache
+    networks:
+      - dev
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M    
+
+volumes:
+  trivy_cache:
+  
+networks:
+  dev:
