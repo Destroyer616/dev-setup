@@ -4,7 +4,7 @@ FROM docker.io/library/ubuntu:latest
 # Install necessary packages
 RUN apt update && apt install -y --no-install-recommends \
     wget2 \
-    openjdk-17-jdk-headless \
+    openjdk-17-jdk \
     maven \
     curl \
     gnupg \
@@ -15,6 +15,7 @@ RUN apt update && apt install -y --no-install-recommends \
     > /etc/apt/sources.list.d/docker.list \
     && apt update && apt install -y --no-install-recommends \
     docker-ce-cli \
+    fontconfig \
     && apt clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Set environment variable for jenkins version and jenkins home
