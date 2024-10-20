@@ -6,7 +6,7 @@ services:
       - jenkins_home:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
       - ~/.orbstack/config/docker.json:/etc/docker/daemon.json
-      - trivy_cache:/root/.cache
+      - trivy_cache:/var/jenkins_home/.cache/trivy
     ports:
       - "8080:8080"
       - "50000:50000"

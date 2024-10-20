@@ -5,6 +5,7 @@ docker build -t jenkins jenkins/
 
 # Compose up jenkins
 docker-compose -f ./jenkins/jenkins-compose.yml up -d
+docker exec -u root jenkins chmod 666 /var/run/docker.sock
 
 # Compose up nexus
 docker-compose -f ./nexus/nexus-compose.yml up -d
