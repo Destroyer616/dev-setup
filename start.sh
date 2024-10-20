@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Build jenkins docker image
-docker build -t nexus3:8082/jenkins jenkins/
+docker build -t jenkins jenkins/
 
 # Compose up jenkins
 docker-compose -f ./jenkins/jenkins-compose.yml up -d

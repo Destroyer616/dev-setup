@@ -1,39 +1,36 @@
-# Use jenkins as the base image
-FROM docker.io/library/ubuntu:latest
+# Base image jenkins/jenkins
+FROM docker.io/jenkins/jenkins
 
-# Install necessary packages
-RUN apt update && apt install -y --no-install-recommends \
-    wget2 \
-    openjdk-17-jdk \
-    maven \
-    curl \
-    gnupg \
-    ca-certificates \
-    apt-transport-https \
-    && curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - \
-    && echo "deb [arch=amd64] https://download.docker.com/linux/ubuntu noble stable" \
-    > /etc/apt/sources.list.d/docker.list \
-    && apt update && apt install -y --no-install-recommends \
-    docker-ce-cli \
-    fontconfig \
-    && apt clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+# Env variable for trivy and docker ce cli versions
+ENV trivy_version=0.56.1
+ENV docker_ce_cli_version=27.3.1-1
 
-# Set environment variable for jenkins version and jenkins home
-ENV JENKINS_HOME=/var/jenkins_home
-ENV JENKINS_VERSION=2.462.3
-ENV TRIVY_VERSION=0.56.2
+# Updates
+USER root
+RUN apt update
 
-# Create the Jenkins home directory
-RUN mkdir -p $JENKINS_HOME
+# Install necessary tools
+RUN apt install -y wget2
 
-# Download the Jenkins WAR file
-RUN wget2 https://get.jenkins.io/war-stable/${JENKINS_VERSION}/jenkins.war -O /usr/share/jenkins.war
+# Download and install docker ce cli
+RUN wget2 https://download.docker.com/linux/ubuntu/dists/noble/pool/stable/amd64/docker-ce-cli_${docker_ce_cli_version}~ubuntu.24.04~noble_amd64.deb 
+
+# Install the downloaded Docker CE CLI package
+RUN dpkg -i docker-ce-cli_*.deb && \
+    rm -f docker-ce-cli_*.deb
 
 # Install trivy client
-RUN wget2 https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz && tar -xzf ./trivy*.tar.gz && chmod +x trivy && mv trivy /usr/local/bin
+RUN wget2 https://github.com/aquasecurity/trivy/releases/download/v${trivy_version}/trivy_${trivy_version}_Linux-64bit.tar.gz && \
+    tar -xzf ./trivy*.tar.gz && \
+    chmod +x trivy && \
+    mv trivy /usr/local/bin && \
+    rm -f trivy*.tar.gz
 
-# Expose the Jenkins port
-EXPOSE 8080
+# Clean up
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Start Jenkins
-CMD ["java", "-jar", "/usr/share/jenkins.war"]
+USER jenkins
+
+# Install nvm
+RUN touch ~/.bashrc
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
