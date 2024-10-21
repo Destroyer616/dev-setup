@@ -1,16 +1,13 @@
 # Base image jenkins/jenkins
-FROM docker.io/jenkins/jenkins
-
+FROM ubuntu
 # Env variable for trivy and docker ce cli versions
 ENV trivy_version=0.56.1
 ENV docker_ce_cli_version=27.3.1-1
 
-# Updates
-USER root
 RUN apt update
 
 # Install necessary tools
-RUN apt install -y wget2
+RUN apt install -y wget2 openjdk-17-jdk
 
 # Download and install docker ce cli
 RUN wget2 https://download.docker.com/linux/ubuntu/dists/noble/pool/stable/amd64/docker-ce-cli_${docker_ce_cli_version}~ubuntu.24.04~noble_amd64.deb 
@@ -29,8 +26,21 @@ RUN wget2 https://github.com/aquasecurity/trivy/releases/download/v${trivy_versi
 # Clean up
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-USER jenkins
+# Jenkins
 
-# Install nvm
-RUN touch ~/.bashrc
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
+# Set environment variables
+ENV JENKINS_HOME=/var/jenkins_home
+
+
+# Create Jenkins home directory
+RUN mkdir -p ${JENKINS_HOME}
+
+# Download the Jenkins WAR file
+RUN wget2 https://get.jenkins.io/war-stable/latest/jenkins.war -O /usr/share/jenkins.war
+
+# Expose the Jenkins port
+EXPOSE 8080
+EXPOSE 50000
+
+# Set the entry point to run Jenkins
+CMD ["java", "-jar", "/usr/share/jenkins.war"]
