@@ -7,7 +7,7 @@ ENV docker_ce_cli_version=27.3.1-1
 RUN apt update
 
 # Install necessary tools
-RUN apt install -y wget2 openjdk-17-jdk
+RUN apt install -y wget2 openjdk-17-jdk maven git
 
 # Download and install docker ce cli
 RUN wget2 https://download.docker.com/linux/ubuntu/dists/noble/pool/stable/amd64/docker-ce-cli_${docker_ce_cli_version}~ubuntu.24.04~noble_amd64.deb 
